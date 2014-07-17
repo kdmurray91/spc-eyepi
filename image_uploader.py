@@ -25,7 +25,7 @@ if not os.path.exists(config_filename):
 
 # Logging setup
 logging.config.fileConfig(config_filename)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("image_uploader")
 
 # Configuration variables
 config = SafeConfigParser()
