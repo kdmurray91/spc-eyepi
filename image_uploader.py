@@ -20,7 +20,7 @@ uploadtimedelay = 5
 # We can't start if no config file
 if not os.path.exists(config_filename):
     print("The configuration file %s was not found in the current directory. \nTry copying the one in the sample directory to %s"
-           % (config_filename,config_filename)) 
+           % (config_filename,config_filename))
     sys.exit(1)
 
 # Logging setup
@@ -66,9 +66,9 @@ def sftpUpload(filenames):
    except Exception, e:
        logger.error(str(e))
        return str(e)
-       
+
    return None
-  
+
 
 if __name__ == "__main__":
 
@@ -78,17 +78,17 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     logger.info("Program Startup")
-    
+
     setup()
 
     ok = True
 
     while (ok):
-        
+
         try:
 
             upload_list = glob.glob(os.path.join(imagedir,'*'))
-          
+
             if len(upload_list) > 0:
 
                 logger.debug("Pausing %d seconds to wait for files to be closed" % uploadtimedelay)
