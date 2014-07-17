@@ -39,7 +39,7 @@ def setup(dump_values = False):
 
     global config, config_filename, imagedir
     global camera_name, timebetweenshots
-    global timestartfrom, timestopat, convertcmdline1, convertcmdline2
+    global timestartfrom, timestopat
 
     config.read(config_filename)
 
@@ -96,46 +96,27 @@ def convertCR2Jpeg(filename):
     Convert a .CR2 file to jpeg
     """
 
-    global convertcmdline1, convertcmdline2
-
+    if not config.getBoolean("convert", "run"):
+        return [raw_filename, ]
+    convert_cmd = config.get("convert", "command")
     try:
 
         logger.debug("Converting .CR2 Image")
 
         raw_filename = filename
-        ppm_filename = filename[:-4] + '.ppm'
         jpeg_filename = filename[:-4] + '.jpg'
+        convert_cmd = convert_cmd % (raw_filename, jpeg_filename)
 
-        # Here we convert from .cr2 to .ppm
-        cmd1 =  convertcmdline1 % raw_filename
-        cmdresults = subprocess.check_output(cmd1.split(' '))
+        cmdresults = subprocess.check_output(convert_cmd.split(' '))
         if cmdresults.lower().find('error:')!=-1:
             logger.error(cmdresults)
         elif len(cmdresults)!=0:
             logger.debug(cmdresults)
-
-        # Next we convert from ppm to jpeg
-        cmd2 = convertcmdline2 % (ppm_filename,jpeg_filename)
-        cmdresults = subprocess.check_output(cmd2.split(' '))
-        if cmdresults.lower().find('error:')!=-1:
-            logger.error(cmdresults)
-        elif len(cmdresults)!=0:
-            logger.debug(cmdresults)
-
-        # Save the jpeg to the web servers directory
-        cmd3 = convertcmdline3 % (ppm_filename,os.path.join("static","last_image.jpg"))
-        cmdresults = subprocess.check_output(cmd3.split(' '))
-        if cmdresults.lower().find('error:')!=-1:
-            logger.error(cmdresults)
-        elif len(cmdresults)!=0:
-            logger.debug(cmdresults)
-
-        os.remove(ppm_filename)
 
     except Exception, e:
         logger.error("Image file Converion error - %s" % str(e))
 
-    return ([raw_filename,jpeg_filename])
+    return [raw_filename, jpeg_filename]
 
 if __name__ == "__main__":
 
